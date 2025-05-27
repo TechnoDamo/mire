@@ -99,15 +99,15 @@
   "Display a visual map of the game world."
   []
   (str "Game World Map:\n\n"
-       "    [closet]    \n"
-       "        |       \n"
-       "        |       \n"
-       "    [start]     \n" 
-       "        |       \n"
-       "        |       \n"
-       "   [hallway] -- [promenade]\n\n"
+       "      [closet]      \n"
+       "          |         \n"
+       "      [start]       \n" 
+       "          |         \n"
+       "     [hallway] -- [102]\n"
+       "          |         \n"
+       "    [promenade]     \n\n"
        "Current location: " (:name @player/*current-room*) "\n"
-       "Legend: | = north/south connection, -- = east/west connection"))
+       ))
 
 ;; Command data
 

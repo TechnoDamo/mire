@@ -1,0 +1,2 @@
+{:desc "You are in room 102. It's a small, quiet room with white walls."
+ :exits {:west :hallway}} 
