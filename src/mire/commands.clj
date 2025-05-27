@@ -26,7 +26,7 @@
   (dosync
     (ref-set player/*exam-state* :in-progress)
     (ref-set player/*exam-question* 0))
-  "TEXT123\n\nWelcome to the Clojure Exam! Answer the following questions:\n\nQuestion 1: What is the result of (+ 1 2 3)?")
+  "Hello! I am Alexander Prutsky, the master of the functional and recursive programming.\n\nWelcome to the Clojure Exam! Answer the following questions:\n\nQuestion 1: What is the result of (+ 1 2 3)?")
 
 (defn check-exam-answer [answer]
   "Check if the exam answer is correct and proceed."
