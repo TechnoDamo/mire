@@ -107,8 +107,15 @@ After=network.target
 User=${SERVICE_USER}
 Group=${SERVICE_GROUP}
 WorkingDirectory=${INSTALL_DIR}
-ExecStart=/usr/bin/java -jar ${INSTALL_DIR}/${JAR_NAME} ${MIRE_PORT} ${INSTALL_DIR}/resources
+ExecStart=/usr/bin/java -jar ${INSTALL_DIR}/${JAR_NAME} ${MIRE_PORT} ${INSTALL_DIR}/resources/rooms
 
+# If MIRE_PORT is < 1024 (e.g., 23), the User=${SERVICE_USER} will need permissions.
+# This can be achieved by:
+# 1. Running the service as root (Not recommended: User=root, Group=root).
+# 2. Using authbind: ExecStart=/usr/bin/authbind --deep /usr/bin/java ... (requires authbind setup for ${SERVICE_USER} and port ${MIRE_PORT})
+# 3. Using capabilities on the java executable or specific to the service.
+# 4. Port redirection (e.g., iptables) to forward port 23 to a higher port that Mire listens on (Mire itself runs on >1023).
+# This script assumes the chosen user can bind to the specified port or measures have been taken.
 
 SuccessExitStatus=143
 Restart=on-failure
