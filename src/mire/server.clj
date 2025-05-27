@@ -3,7 +3,8 @@
             [server.socket :as socket]
             [mire.player :as player]
             [mire.commands :as commands]
-            [mire.rooms :as rooms]))
+            [mire.rooms :as rooms])
+  (:gen-class))
 
 (defn- cleanup []
   "Drop all inventory and remove player from room and player list."
