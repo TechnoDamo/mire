@@ -42,3 +42,45 @@ The project follows a typical Clojure project structure. The core game logic is 
 *   **Inventory:** Players maintain an inventory of items they are carrying.
 *   **Multiplayer Interaction:** Players can see other players in the same room and communicate with them using the `say` command.
 *   **State Management:** The game uses Clojure's STM (Software Transactional Memory) with `ref`s and `dosync` to manage game state concurrently and safely for multiple players.
+
+## New Features Added
+
+### Special Login Greetings
+*   **Personalized Welcome Messages:** The game now recognizes specific names during login and displays special greetings:
+    *   **Alexander Prutsky** (variations: "Alex P", "Alex Prtutsky", "Alexander Prutsky") - displays "Welcome sensei, hope you appreciate the work of your student!"
+    *   **Damir Koblev** (variations: "Damir K", "Damir Koblev") - displays "Welcome, master!"
+    *   Name matching is case-insensitive
+
+### Enhanced Commands
+*   **`coke`**: A refreshing command that displays "Aaaah, now we're talking" - perfect for those coding moments!
+*   **`map`**: Displays a visual ASCII representation of the game world showing:
+    *   All rooms and their connections
+    *   Current player location
+    *   Connection types (| for north/south, -- for east/west)
+
+### Room 102 - Clojure Examination Room
+*   **Interactive Exam System:** Room 102 features a comprehensive Clojure programming exam:
+    *   **Entry Message:** Upon entering, displays Alexander Prutsky's introduction and "Hello! I am Alexander Prutsky, the master of the functional and recursive programming."
+    *   **Three Questions:** Tests basic Clojure knowledge:
+        1. What is the result of `(+ 1 2 3)`? (Answer: 6)
+        2. What function is used to add an element to the beginning of a list? (Answer: cons)
+        3. What does `(first [1 2 3])` return? (Answer: 1)
+    *   **Natural Input:** Players can answer directly without typing "answer" - just type the response
+    *   **Exam States:** 
+        *   Failed exam allows retaking by leaving and re-entering the room
+        *   Passed exam shows congratulations on future visits
+    *   **Smart Command Handling:** During exam, unrecognized input is treated as answers, while normal commands (move, look, etc.) still work
+
+### Game World Expansion
+*   **New Room Layout:** The game world now includes room 102 accessible from the hallway:
+    ```
+          [closet]      
+              |         
+          [start]       
+              |         
+         [hallway] -- [102]
+              |         
+        [promenade]     
+    ```
+
+
