@@ -91,9 +91,23 @@
                               'execute 'commands))))
 
 (defn coke
-  "Enjoy a refreshing beverage."
+  "Sounds of enjoyment of a refreshing beverage."
   []
-  "Aaaah, now we're talking")
+  "Aaaah, now we're talking!)")
+
+(defn map
+  "Display a visual map of the game world."
+  []
+  (str "Game World Map:\n\n"
+       "    [closet]    \n"
+       "        |       \n"
+       "        |       \n"
+       "    [start]     \n" 
+       "        |       \n"
+       "        |       \n"
+       "   [hallway] -- [promenade]\n\n"
+       "Current location: " (:name @player/*current-room*) "\n"
+       "Legend: | = north/south connection, -- = east/west connection"))
 
 ;; Command data
 
@@ -109,7 +123,8 @@
                "look" look
                "say" say
                "help" help
-               "coke" coke})
+               "coke" coke
+               "map" map})
 
 ;; Command handling
 
