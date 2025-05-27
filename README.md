@@ -16,7 +16,6 @@ This branch is intended to store features that are currently being under develop
 *   **`resources/rooms/`**: Contains definitions for different rooms in the game (e.g., `closet`, `hallway`).
 *   **`test/`**: Contains test code for the project, with tests for commands (`test_commands.clj`) and rooms (`test_rooms.clj`).
 *   **`lein`**: A Leiningen script for managing the Clojure project (e.g., running, testing, building).
-*   **`.gitignore`**: Specifies intentionally untracked files that Git should ignore.
 
 ## Architecture
 
