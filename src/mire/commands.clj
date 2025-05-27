@@ -31,7 +31,13 @@
                             (:inhabitants @player/*current-room*)
                             (:inhabitants target))
          (ref-set player/*current-room* target)
-         (look))
+         ;; Special handling for room 102 (exam room)
+         (if (= target-name :102)
+           (cond
+             (= @player/*exam-state* :passed) (str (look) "\n\nYou have already passed the exam! Well done!")
+             (or (= @player/*exam-state* :not-started) (= @player/*exam-state* :failed)) (start-exam)
+             :else (look))
+           (look)))
        "You can't go that way."))))
 
 (defn grab
@@ -109,6 +115,42 @@
        "Current location: " (:name @player/*current-room*) "\n"
        ))
 
+;; Exam system
+(def exam-questions
+  [{:question "What is the result of (+ 1 2 3)?"
+    :answers ["6" "6.0" "six"]
+    :correct-answer "6"}
+   {:question "What function is used to add an element to the beginning of a list?"
+    :answers ["cons" "conj"]
+    :correct-answer "cons"}
+   {:question "What does (first [1 2 3]) return?"
+    :answers ["1" "1.0" "one"]
+    :correct-answer "1"}])
+
+(defn start-exam []
+  "Start the Clojure exam."
+  (dosync
+    (ref-set player/*exam-state* :in-progress)
+    (ref-set player/*exam-question* 0))
+  "TEXT123\n\nWelcome to the Clojure Exam! Answer the following questions:\n\nQuestion 1: What is the result of (+ 1 2 3)?")
+
+(defn check-exam-answer [answer]
+  "Check if the exam answer is correct and proceed."
+  (let [current-q @player/*exam-question*
+        question (nth exam-questions current-q)
+        correct? (some #(= (str/lower-case %) (str/lower-case answer)) (:answers question))]
+    (if correct?
+      (let [next-q (inc current-q)]
+        (dosync (ref-set player/*exam-question* next-q))
+        (cond
+          (= next-q 1) "Correct! Question 2: What function is used to add an element to the beginning of a list?"
+          (= next-q 2) "Correct! Question 3: What does (first [1 2 3]) return?"
+          (= next-q 3) (do (dosync (ref-set player/*exam-state* :passed))
+                          "Correct! Congratulations! You have passed the Clojure exam!")
+          :else "Error in exam system."))
+      (do (dosync (ref-set player/*exam-state* :failed))
+          "Incorrect answer. Don't give up! Try entering the room again to retake the exam."))))
+
 ;; Command data
 
 (def commands {"move" move,
@@ -124,7 +166,8 @@
                "say" say
                "help" help
                "coke" coke
-               "map" map})
+               "map" map
+               "answer" check-exam-answer})
 
 ;; Command handling
 

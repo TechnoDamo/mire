@@ -31,7 +31,7 @@
       (or (= lower-name "alex p")
           (= lower-name "alex prtutsky") 
           (= lower-name "alexander prutsky"))
-      "Welcome sensei, hope you appreciate the work of your student\n"
+      "Welcome sensei, hope you appreciate the work of your student!\n"
       
       ;; Check for Damir variations
       (or (= lower-name "damir k")
@@ -46,12 +46,13 @@
             *out* (io/writer out)
             *err* (io/writer System/err)]
 
-    ;; We have to nest this in another binding call instead of using
-    ;; the one above so *in* and *out* will be bound to the socket
+    
     (print "\nWhat is your name? ") (flush)
     (binding [player/*name* (get-unique-player-name (read-line))
               player/*current-room* (ref (@rooms/rooms :start))
-              player/*inventory* (ref #{})]
+              player/*inventory* (ref #{})
+              player/*exam-state* (ref :not-started)
+              player/*exam-question* (ref 0)]
       
       ;; Display special greeting if applicable
       (let [greeting (get-special-greeting player/*name*)]
