@@ -9,6 +9,42 @@
   (alter from disj obj)
   (alter to conj obj))
 
+;; Exam system
+(def exam-questions
+  [{:question "What is the result of (+ 1 2 3)?"
+    :answers ["6" "6.0" "six"]
+    :correct-answer "6"}
+   {:question "What function is used to add an element to the beginning of a list?"
+    :answers ["cons" "conj"]
+    :correct-answer "cons"}
+   {:question "What does (first [1 2 3]) return?"
+    :answers ["1" "1.0" "one"]
+    :correct-answer "1"}])
+
+(defn start-exam []
+  "Start the Clojure exam."
+  (dosync
+    (ref-set player/*exam-state* :in-progress)
+    (ref-set player/*exam-question* 0))
+  "TEXT123\n\nWelcome to the Clojure Exam! Answer the following questions:\n\nQuestion 1: What is the result of (+ 1 2 3)?")
+
+(defn check-exam-answer [answer]
+  "Check if the exam answer is correct and proceed."
+  (let [current-q @player/*exam-question*
+        question (nth exam-questions current-q)
+        correct? (some #(= (str/lower-case %) (str/lower-case answer)) (:answers question))]
+    (if correct?
+      (let [next-q (inc current-q)]
+        (dosync (ref-set player/*exam-question* next-q))
+        (cond
+          (= next-q 1) "Correct! Question 2: What function is used to add an element to the beginning of a list?"
+          (= next-q 2) "Correct! Question 3: What does (first [1 2 3]) return?"
+          (= next-q 3) (do (dosync (ref-set player/*exam-state* :passed))
+                          "Correct! Congratulations! You have passed the Clojure exam!")
+          :else "Error in exam system."))
+      (do (dosync (ref-set player/*exam-state* :failed))
+          "Incorrect answer. Don't give up! Try entering the room again to retake the exam."))))
+
 ;; Command functions
 
 (defn look
@@ -115,42 +151,6 @@
        "Current location: " (:name @player/*current-room*) "\n"
        ))
 
-;; Exam system
-(def exam-questions
-  [{:question "What is the result of (+ 1 2 3)?"
-    :answers ["6" "6.0" "six"]
-    :correct-answer "6"}
-   {:question "What function is used to add an element to the beginning of a list?"
-    :answers ["cons" "conj"]
-    :correct-answer "cons"}
-   {:question "What does (first [1 2 3]) return?"
-    :answers ["1" "1.0" "one"]
-    :correct-answer "1"}])
-
-(defn start-exam []
-  "Start the Clojure exam."
-  (dosync
-    (ref-set player/*exam-state* :in-progress)
-    (ref-set player/*exam-question* 0))
-  "TEXT123\n\nWelcome to the Clojure Exam! Answer the following questions:\n\nQuestion 1: What is the result of (+ 1 2 3)?")
-
-(defn check-exam-answer [answer]
-  "Check if the exam answer is correct and proceed."
-  (let [current-q @player/*exam-question*
-        question (nth exam-questions current-q)
-        correct? (some #(= (str/lower-case %) (str/lower-case answer)) (:answers question))]
-    (if correct?
-      (let [next-q (inc current-q)]
-        (dosync (ref-set player/*exam-question* next-q))
-        (cond
-          (= next-q 1) "Correct! Question 2: What function is used to add an element to the beginning of a list?"
-          (= next-q 2) "Correct! Question 3: What does (first [1 2 3]) return?"
-          (= next-q 3) (do (dosync (ref-set player/*exam-state* :passed))
-                          "Correct! Congratulations! You have passed the Clojure exam!")
-          :else "Error in exam system."))
-      (do (dosync (ref-set player/*exam-state* :failed))
-          "Incorrect answer. Don't give up! Try entering the room again to retake the exam."))))
-
 ;; Command data
 
 (def commands {"move" move,
@@ -175,7 +175,13 @@
   "Execute a command that is passed to us."
   [input]
   (try (let [[command & args] (.split input " +")]
-         (apply (commands command) args))
+         ;; Check if player is taking exam and input is not a recognized command
+         (if (and (= @player/*exam-state* :in-progress)
+                  (not (contains? commands command)))
+           ;; Treat the entire input as an exam answer
+           (check-exam-answer (str/trim input))
+           ;; Normal command execution
+           (apply (commands command) args)))
        (catch Exception e
          (.printStackTrace e (new java.io.PrintWriter *err*))
          "You can't do that!")))
