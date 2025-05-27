@@ -1,15 +1,12 @@
 #!/bin/bash
 
-# Non-interactive script to deploy Mire as a systemd service
-# Run this script from the root directory of the Mire project.
-
 set -e # Exit immediately if a command exits with a non-zero status.
 
 # --- Configuration --- Hardcoded values for non-interactive deployment ---
 INSTALL_DIR="/opt/miregame"
 SERVICE_USER="mireuser"      # User the service will run as
 SERVICE_GROUP="miregroup"    # Group for the service user
-MIRE_PORT="23"             # Port for Mire server (Note: Port 23 requires root privileges or equivalent)
+MIRE_PORT="3333"             # Port for Mire server (Note: Port 23 requires root privileges or equivalent)
 PROJECT_NAME="mire"        # Used for JAR name and service name
 # --- End Configuration ---
 
