@@ -90,6 +90,11 @@
                       (dissoc (ns-publics 'mire.commands)
                               'execute 'commands))))
 
+(defn coke
+  "Enjoy a refreshing beverage."
+  []
+  "Aaaah, now we're talking")
+
 ;; Command data
 
 (def commands {"move" move,
@@ -103,7 +108,8 @@
                "detect" detect
                "look" look
                "say" say
-               "help" help})
+               "help" help
+               "coke" coke})
 
 ;; Command handling
 
